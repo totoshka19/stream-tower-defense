@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import type { Point } from '../mapData';
+import { path, type Point } from '../mapData';
 
 export interface EnemyOptions {
   position: Point;
@@ -13,10 +13,9 @@ export class Enemy {
   public health: number;
   public speed: number;
   public position: Point;
-
   public readonly graphics: PIXI.Graphics;
-
   private isDestroyed = false;
+  private targetPointIndex = 1;
 
   constructor(options: EnemyOptions) {
     this.health = options.health;
@@ -33,8 +32,27 @@ export class Enemy {
 
   public update(delta: number): void {
     if (this.isDestroyed) return;
+    if (this.targetPointIndex >= path.length) {
+      this.destroy();
+      return;
+    }
 
-    // Логику движения добавим здесь
+    const targetPoint = path[this.targetPointIndex];
+    const dx = targetPoint.x - this.position.x;
+    const dy = targetPoint.y - this.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const moveDistance = this.speed * delta;
+
+    if (distance < moveDistance) {
+      this.position.x = targetPoint.x;
+      this.position.y = targetPoint.y;
+      this.targetPointIndex++;
+    } else {
+      const dirX = dx / distance;
+      const dirY = dy / distance;
+      this.position.x += dirX * moveDistance;
+      this.position.y += dirY * moveDistance;
+    }
 
     this.graphics.position.set(this.position.x, this.position.y);
   }
