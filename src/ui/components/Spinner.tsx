@@ -1,5 +1,3 @@
-// src/ui/components/Spinner.tsx
-
 import styles from './Spinner.module.css';
 
 export const Spinner = () => {
