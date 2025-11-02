@@ -1,9 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { Enemy } from '../entities/Enemy';
 import { path } from '../mapData';
-
-const DINO_FRAME_WIDTH = 24;
-const DINO_FRAME_HEIGHT = 24;
+import { ENEMY_CONFIG } from '../config';
+import { generateTexturesFromSpritesheet } from '../../utils/spriteUtils';
 
 export class EnemyManager {
   private readonly enemies: Enemy[] = [];
@@ -16,86 +15,29 @@ export class EnemyManager {
     stage.addChild(this.container);
   }
 
-  // Новый метод для загрузки ассетов
   public async loadAssets(): Promise<void> {
-    // 1. Загружаем основную текстуру спрайт-листа
     const baseTexture = await PIXI.Assets.load<PIXI.Texture>(
-      'assets/dino_spritesheet.png'
+      ENEMY_CONFIG.DINO.SPRITE_SHEET
     );
 
-    // 2. Создаем объект Spritesheet для удобной работы с кадрами
-    const spritesheet = new PIXI.Spritesheet(baseTexture, {
-      frames: {
-        dino_frame_0: {
-          frame: {
-            x: 0 * DINO_FRAME_WIDTH,
-            y: 0,
-            w: DINO_FRAME_WIDTH,
-            h: DINO_FRAME_HEIGHT,
-          },
-        },
-        dino_frame_1: {
-          frame: {
-            x: 1 * DINO_FRAME_WIDTH,
-            y: 0,
-            w: DINO_FRAME_WIDTH,
-            h: DINO_FRAME_HEIGHT,
-          },
-        },
-        dino_frame_2: {
-          frame: {
-            x: 2 * DINO_FRAME_WIDTH,
-            y: 0,
-            w: DINO_FRAME_WIDTH,
-            h: DINO_FRAME_HEIGHT,
-          },
-        },
-        dino_frame_3: {
-          frame: {
-            x: 3 * DINO_FRAME_WIDTH,
-            y: 0,
-            w: DINO_FRAME_WIDTH,
-            h: DINO_FRAME_HEIGHT,
-          },
-        },
-        dino_frame_4: {
-          frame: {
-            x: 4 * DINO_FRAME_WIDTH,
-            y: 0,
-            w: DINO_FRAME_WIDTH,
-            h: DINO_FRAME_HEIGHT,
-          },
-        },
-        dino_frame_5: {
-          frame: {
-            x: 5 * DINO_FRAME_WIDTH,
-            y: 0,
-            w: DINO_FRAME_WIDTH,
-            h: DINO_FRAME_HEIGHT,
-          },
-        },
-        // ... при необходимости можно описать все 24 кадра
-      },
-      meta: {
-        scale: '1',
-      },
+    this.dinoWalkTextures = generateTexturesFromSpritesheet({
+      baseTexture,
+      frameWidth: ENEMY_CONFIG.DINO.FRAME_WIDTH,
+      frameHeight: ENEMY_CONFIG.DINO.FRAME_HEIGHT,
+      frameCount: ENEMY_CONFIG.DINO.WALK_FRAMES,
     });
-
-    // 3. Парсим спрайт-лист, чтобы получить доступ к кадрам по их именам
-    await spritesheet.parse();
-
-    // 4. Сохраняем текстуры для анимации ходьбы в наше свойство
-    this.dinoWalkTextures = Object.values(spritesheet.textures);
   }
 
   public spawnEnemy(): void {
     const startPosition = path[0];
     const newEnemy = new Enemy({
       position: startPosition,
-      health: 100,
-      speed: 50, // 50 пикселей в секунду
+      health: ENEMY_CONFIG.DINO.BASE_HEALTH,
+      speed: ENEMY_CONFIG.DINO.BASE_SPEED,
       textures: this.dinoWalkTextures,
     });
+
+    newEnemy.sprite.animationSpeed = ENEMY_CONFIG.DINO.ANIMATION_SPEED;
 
     this.enemies.push(newEnemy);
     this.container.addChild(newEnemy.sprite);

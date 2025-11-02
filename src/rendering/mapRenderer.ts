@@ -1,13 +1,13 @@
 import * as PIXI from 'pixi.js';
-import type { Point } from '../core/mapData';
-
-const PATH_COLOR = 0xdeb887;
-const PATH_WIDTH = 50;
+import type { Point } from '../types/common';
+import { MAP_CONFIG } from '../core/config';
 
 export const drawBackground = (app: PIXI.Application) => {
   const background = new PIXI.Graphics();
 
-  background.rect(0, 0, app.screen.width, app.screen.height).fill(0x006400); // Темно-зеленый цвет травы
+  background
+    .rect(0, 0, app.screen.width, app.screen.height)
+    .fill(MAP_CONFIG.BACKGROUND_COLOR);
 
   app.stage.addChild(background);
 };
@@ -21,8 +21,8 @@ export const drawPath = (app: PIXI.Application, path: Point[]) => {
   }
 
   pathGraphics.stroke({
-    width: PATH_WIDTH,
-    color: PATH_COLOR,
+    width: MAP_CONFIG.PATH_WIDTH,
+    color: MAP_CONFIG.PATH_COLOR,
     cap: 'round',
     join: 'round',
   });

@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
-import { path, type Point } from '../mapData';
+import { path } from '../mapData';
+import type { Point } from '../../types/common';
 
 export interface EnemyOptions {
   position: Point;

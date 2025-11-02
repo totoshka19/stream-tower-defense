@@ -1,7 +1,4 @@
-export interface Point {
-  x: number;
-  y: number;
-}
+import type { Point } from '../types/common';
 
 export const path: Point[] = [
   { x: 0, y: 100 },

@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import { path } from './mapData';
 import { drawBackground, drawPath } from '../rendering/mapRenderer';
 import { EnemyManager } from './managers/EnemyManager';
+import { GAME_CONFIG, ENEMY_CONFIG } from './config';
 
 export class GameEngine {
   public app: PIXI.Application;
@@ -19,8 +20,8 @@ export class GameEngine {
     if (this.isInitialized) return;
 
     await this.app.init({
-      width: 800,
-      height: 600,
+      width: GAME_CONFIG.CANVAS_WIDTH,
+      height: GAME_CONFIG.CANVAS_HEIGHT,
     });
 
     parentElement.appendChild(this.app.canvas);
@@ -41,7 +42,7 @@ export class GameEngine {
       if (this.isInitialized) {
         this.enemyManager.spawnEnemy();
       }
-    }, 2000);
+    }, ENEMY_CONFIG.SPAWN_INTERVAL_MS);
     // ------------------------------------
   }
 

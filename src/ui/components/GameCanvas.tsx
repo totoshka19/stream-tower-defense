@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Spinner } from './Spinner';
 import { useGameEngine } from '../hooks/useGameEngine';
+import { GAME_CONFIG } from '../../core/config';
 
 export const GameCanvas = () => {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -10,8 +11,8 @@ export const GameCanvas = () => {
     <div
       style={{
         position: 'relative',
-        width: '800px',
-        height: '600px',
+        width: GAME_CONFIG.CANVAS_WIDTH,
+        height: GAME_CONFIG.CANVAS_HEIGHT,
         border: '2px solid #fff',
       }}
     >
