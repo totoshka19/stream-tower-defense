@@ -4,7 +4,6 @@ import { path } from '../mapData';
 
 const DINO_FRAME_WIDTH = 24;
 const DINO_FRAME_HEIGHT = 24;
-const DINO_WALK_FRAMES = 6;
 
 export class EnemyManager {
   private readonly enemies: Enemy[] = [];
