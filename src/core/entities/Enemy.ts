@@ -5,15 +5,14 @@ export interface EnemyOptions {
   position: Point;
   health: number;
   speed: number;
-  radius: number;
-  color: number;
+  textures: PIXI.Texture[];
 }
 
 export class Enemy {
   public health: number;
   public speed: number;
   public position: Point;
-  public readonly graphics: PIXI.Graphics;
+  public readonly sprite: PIXI.AnimatedSprite;
   private isDestroyed = false;
   private targetPointIndex = 1;
 
@@ -21,13 +20,11 @@ export class Enemy {
     this.health = options.health;
     this.speed = options.speed;
     this.position = { ...options.position };
-
-    this.graphics = new PIXI.Graphics();
-    this.graphics
-      .rect(0, 0, options.radius * 2, options.radius * 2)
-      .fill(options.color);
-    this.graphics.pivot.set(options.radius, options.radius);
-    this.graphics.position.set(this.position.x, this.position.y);
+    this.sprite = new PIXI.AnimatedSprite(options.textures);
+    this.sprite.anchor.set(0.5);
+    this.sprite.animationSpeed = 0.15;
+    this.sprite.play();
+    this.sprite.position.set(this.position.x, this.position.y);
   }
 
   public update(delta: number): void {
@@ -54,7 +51,7 @@ export class Enemy {
       this.position.y += dirY * moveDistance;
     }
 
-    this.graphics.position.set(this.position.x, this.position.y);
+    this.sprite.position.set(this.position.x, this.position.y);
   }
 
   public takeDamage(amount: number): void {
@@ -67,7 +64,7 @@ export class Enemy {
   public destroy(): void {
     if (this.isDestroyed) return;
     this.isDestroyed = true;
-    this.graphics.destroy();
+    this.sprite.destroy();
   }
 
   public get isDead(): boolean {

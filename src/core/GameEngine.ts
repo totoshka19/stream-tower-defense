@@ -27,6 +27,8 @@ export class GameEngine {
 
     this.enemyManager = new EnemyManager(this.app.stage);
 
+    await this.enemyManager.loadAssets();
+
     this.app.ticker.add(this.update, this);
 
     this.drawInitialScene();
