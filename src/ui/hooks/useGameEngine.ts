@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { GameEngine } from '../../core/GameEngine';
 
 export const useGameEngine = (
-  containerRef: React.RefObject<HTMLDivElement>
+  containerRef: React.RefObject<HTMLDivElement | null>
 ) => {
   const engineRef = useRef<GameEngine | null>(null);
   const [isLoading, setIsLoading] = useState(true);

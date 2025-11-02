@@ -86,9 +86,7 @@ export class EnemyManager {
     await spritesheet.parse();
 
     // 4. Сохраняем текстуры для анимации ходьбы в наше свойство
-    for (let i = 0; i < DINO_WALK_FRAMES; i++) {
-      this.dinoWalkTextures.push(spritesheet.textures[`dino_frame_${i}`]);
-    }
+    this.dinoWalkTextures = Object.values(spritesheet.textures);
   }
 
   public spawnEnemy(): void {
