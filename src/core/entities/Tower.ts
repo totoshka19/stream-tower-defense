@@ -19,6 +19,7 @@ export class Tower {
   private readonly damage: number;
   private readonly fireCooldown: number; // Задержка между выстрелами в секундах
   private timeSinceLastShot: number;
+  private currentTarget: Enemy | null = null;
 
   constructor(options: TowerOptions) {
     this.range = options.range;
@@ -39,39 +40,65 @@ export class Tower {
   public update(delta: number, enemies: Enemy[]): void {
     this.timeSinceLastShot += delta;
 
-    if (this.timeSinceLastShot >= this.fireCooldown) {
-      const target = this.findTarget(enemies);
+    // 1. Проверяем, валидна ли текущая цель
+    if (this.currentTarget) {
+      const isTargetDead = this.currentTarget.isDead;
+      const isTargetOutOfRange = this.isEnemyOutOfRange(this.currentTarget);
 
-      if (target) {
-        this.attack(target);
-        this.timeSinceLastShot = 0;
+      if (isTargetDead || isTargetOutOfRange) {
+        this.currentTarget = null; // Сбрасываем цель
       }
+    }
+
+    // 2. Если цели нет, ищем новую
+    if (!this.currentTarget) {
+      this.currentTarget = this.findTarget(enemies);
+    }
+
+    // 3. Если есть цель и мы можем стрелять, атакуем
+    if (this.currentTarget && this.timeSinceLastShot >= this.fireCooldown) {
+      this.attack(this.currentTarget);
+      this.timeSinceLastShot = 0;
     }
   }
 
   /**
-   * Находит ближайшего врага в радиусе атаки.
+   * Проверяет, находится ли враг вне радиуса действия башни.
+   * @param enemy - Враг для проверки.
+   * @returns true, если враг вне радиуса.
+   */
+  private isEnemyOutOfRange(enemy: Enemy): boolean {
+    const towerPosition = this.sprite.position;
+    const dx = towerPosition.x - enemy.position.x;
+    const dy = towerPosition.y - enemy.position.y;
+    const distanceSq = dx * dx + dy * dy;
+    return distanceSq > this.range * this.range;
+  }
+
+  /**
+   * Находит врага, который дальше всех от финиша (т.е., имеет наименьший targetPointIndex)
+   * и при этом находится в радиусе атаки.
    * @param enemies - Массив для поиска цели.
-   * @returns Ближайший враг или null, если врагов в радиусе нет.
+   * @returns Наименее продвинутый враг или null.
    */
   private findTarget(enemies: Enemy[]): Enemy | null {
-    let closestEnemy: Enemy | null = null;
-    let minDistanceSq = Infinity;
-
-    const towerPosition = this.sprite.position;
+    let bestTarget: Enemy | null = null;
+    // Инициализируем минимальный прогресс очень большим числом
+    // (индекс пути не может быть больше path.length)
+    let minProgress = Infinity;
 
     for (const enemy of enemies) {
-      const dx = towerPosition.x - enemy.position.x;
-      const dy = towerPosition.y - enemy.position.y;
-      const distanceSq = dx * dx + dy * dy;
-
-      if (distanceSq < this.range * this.range && distanceSq < minDistanceSq) {
-        minDistanceSq = distanceSq;
-        closestEnemy = enemy;
+      // Убедимся, что враг жив и находится в радиусе
+      if (!enemy.isDead && !this.isEnemyOutOfRange(enemy)) {
+        // Ищем врага с наименьшим targetPointIndex (т.е., дальше от финиша)
+        if (enemy.targetPointIndex < minProgress) {
+          minProgress = enemy.targetPointIndex;
+          bestTarget = enemy;
+        }
       }
     }
 
-    return closestEnemy;
+    return bestTarget;
   }
 
   /**
@@ -79,10 +106,6 @@ export class Tower {
    * @param target - Враг, которого нужно атаковать.
    */
   private attack(target: Enemy): void {
-    console.log('Башня атакует врага!', {
-      towerPos: this.sprite.position,
-      enemyPos: target.position,
-    });
     // На данном этапе атака мгновенная.
     // В будущем здесь можно будет создавать снаряды.
     target.takeDamage(this.damage);

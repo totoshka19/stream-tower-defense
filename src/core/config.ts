@@ -24,8 +24,8 @@ export const ENEMY_CONFIG = {
 
 export const TOWER_CONFIG = {
   BASIC_TOWER: {
-    RANGE: 160, // Радиус атаки в пикселях
-    DAMAGE: 10,
+    RANGE: 150, // Радиус атаки в пикселях
+    DAMAGE: 20,
     FIRE_RATE: 1, // Выстрелов в секунду
     // Параметры для временной графики, пока нет спрайта
     PLACEHOLDER_COLOR: 0xcccccc, // Светло-серый

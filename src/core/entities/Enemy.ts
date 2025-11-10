@@ -15,7 +15,7 @@ export class Enemy {
   public position: Point;
   public readonly sprite: PIXI.AnimatedSprite;
   private isDestroyed = false;
-  private targetPointIndex = 1;
+  public targetPointIndex = 1;
 
   constructor(options: EnemyOptions) {
     this.health = options.health;
