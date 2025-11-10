@@ -21,3 +21,14 @@ export const ENEMY_CONFIG = {
   },
   SPAWN_INTERVAL_MS: 2000,
 };
+
+export const TOWER_CONFIG = {
+  BASIC_TOWER: {
+    RANGE: 160, // Радиус атаки в пикселях
+    DAMAGE: 10,
+    FIRE_RATE: 1, // Выстрелов в секунду
+    // Параметры для временной графики, пока нет спрайта
+    PLACEHOLDER_COLOR: 0xcccccc, // Светло-серый
+    PLACEHOLDER_RADIUS: 15,
+  },
+};

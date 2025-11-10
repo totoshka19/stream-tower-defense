@@ -55,6 +55,14 @@ export class EnemyManager {
     }
   }
 
+  /**
+   * Возвращает массив всех активных врагов.
+   * @returns Массив экземпляров Enemy.
+   */
+  public getEnemies(): Enemy[] {
+    return this.enemies;
+  }
+
   public destroy(): void {
     for (const enemy of this.enemies) {
       enemy.destroy();
