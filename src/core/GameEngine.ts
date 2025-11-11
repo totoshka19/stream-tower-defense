@@ -3,6 +3,7 @@ import { path } from './mapData';
 import { drawBackground, drawPath } from '../rendering/mapRenderer';
 import { EnemyManager } from './managers/EnemyManager';
 import { TowerManager } from './managers/TowerManager';
+import type { SoundManager } from './managers/SoundManager';
 import { GAME_CONFIG, ENEMY_CONFIG } from './config';
 import type { Point } from '../types/common';
 
@@ -12,7 +13,7 @@ export class GameEngine {
 
   private enemyManager!: EnemyManager;
   private towerManager!: TowerManager;
-  private soundManager: any | null = null;
+  private soundManager: SoundManager | null = null;
   private spawnInterval: number | undefined;
 
   constructor() {
