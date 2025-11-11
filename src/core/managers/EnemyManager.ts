@@ -3,16 +3,26 @@ import { Enemy } from '../entities/Enemy';
 import { path } from '../mapData';
 import { ENEMY_CONFIG } from '../config';
 import { generateTexturesFromSpritesheet } from '../../utils/spriteUtils';
+import type { SoundManager } from './SoundManager';
 
 export class EnemyManager {
   private readonly enemies: Enemy[] = [];
   private readonly container: PIXI.Container;
   private dinoWalkTextures: PIXI.Texture[] = [];
+  private soundManager: SoundManager | null = null;
 
   constructor(stage: PIXI.Container) {
     this.container = new PIXI.Container();
     this.container.zIndex = 1;
     stage.addChild(this.container);
+  }
+
+  /**
+   * Устанавливает SoundManager для воспроизведения звуков.
+   * @param soundManager - Экземпляр SoundManager.
+   */
+  public setSoundManager(soundManager: SoundManager): void {
+    this.soundManager = soundManager;
   }
 
   public async loadAssets(): Promise<void> {
@@ -50,6 +60,7 @@ export class EnemyManager {
 
     for (let i = this.enemies.length - 1; i >= 0; i--) {
       if (this.enemies[i].isDead) {
+        this.soundManager?.playSound('explosion');
         this.enemies.splice(i, 1);
       }
     }

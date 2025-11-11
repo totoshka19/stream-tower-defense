@@ -5,7 +5,13 @@ import { GAME_CONFIG } from '../../core/config';
 
 export const GameCanvas = () => {
   const parentRef = useRef<HTMLDivElement>(null);
-  const { isLoading } = useGameEngine(parentRef);
+  const { engine, isLoading } = useGameEngine(parentRef);
+
+  const handleCanvasClick = () => {
+    if (engine) {
+      engine.initializeAudio();
+    }
+  };
 
   return (
     <div
@@ -15,6 +21,7 @@ export const GameCanvas = () => {
         height: GAME_CONFIG.CANVAS_HEIGHT,
         border: '2px solid #fff',
       }}
+      onClick={handleCanvasClick}
     >
       {isLoading && <Spinner />}
       <div ref={parentRef} style={{ display: isLoading ? 'none' : 'block' }} />

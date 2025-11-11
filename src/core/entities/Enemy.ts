@@ -57,9 +57,6 @@ export class Enemy {
 
   public takeDamage(amount: number): void {
     this.health -= amount;
-    console.log(
-      `Враг получил ${amount} урона. Осталось здоровья: ${this.health}`
-    );
     if (this.health <= 0) {
       this.destroy();
     }

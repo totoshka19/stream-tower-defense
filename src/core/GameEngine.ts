@@ -2,16 +2,17 @@ import * as PIXI from 'pixi.js';
 import { path } from './mapData';
 import { drawBackground, drawPath } from '../rendering/mapRenderer';
 import { EnemyManager } from './managers/EnemyManager';
-import { TowerManager } from './managers/TowerManager'; // --- ИМПОРТ
+import { TowerManager } from './managers/TowerManager';
 import { GAME_CONFIG, ENEMY_CONFIG } from './config';
-import type { Point } from '../types/common'; // --- ИМПОРТ
+import type { Point } from '../types/common';
 
 export class GameEngine {
   public app: PIXI.Application;
   private isInitialized = false;
 
   private enemyManager!: EnemyManager;
-  private towerManager!: TowerManager; // --- НОВОЕ СВОЙСТВО
+  private towerManager!: TowerManager;
+  private soundManager: any | null = null;
   private spawnInterval: number | undefined;
 
   constructor() {
@@ -38,9 +39,7 @@ export class GameEngine {
     ]);
 
     this.app.ticker.add(this.update, this);
-
     this.drawInitialScene();
-
     this.isInitialized = true;
 
     // --- Демонстрационный спавн врагов ---
@@ -55,6 +54,28 @@ export class GameEngine {
     // --- Демонстрационная установка башни ---
     this.placeTower({ x: 200, y: 200 });
     // ------------------------------------
+  }
+
+  public async initializeAudio(): Promise<void> {
+    if (this.soundManager) {
+      return;
+    }
+
+    console.log('User gesture detected, initializing audio system...');
+
+    try {
+      // Динамически импортируем модуль ТОЛЬКО СЕЙЧАС
+      const { SoundManager } = await import('./managers/SoundManager');
+
+      this.soundManager = new SoundManager();
+      await this.soundManager.loadAssets();
+
+      this.enemyManager.setSoundManager(this.soundManager);
+
+      console.log('Audio system initialized successfully.');
+    } catch (error) {
+      console.error('Failed to initialize audio system:', error);
+    }
   }
 
   /**
@@ -95,6 +116,7 @@ export class GameEngine {
       if (this.towerManager) {
         this.towerManager.destroy();
       }
+      this.soundManager?.destroy();
       this.app.destroy(true, true);
       this.isInitialized = false;
     }
